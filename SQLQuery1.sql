@@ -1,0 +1,13 @@
+CREATE DATABASE TeamCore;
+GO
+USE TeamCore;
+GO
+CREATE TABLE Employees (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(150) NOT NULL,
+    Department VARCHAR(100) NOT NULL,
+    Salary FLOAT NOT NULL
+);
+GO
+SELECT * FROM Employees;
