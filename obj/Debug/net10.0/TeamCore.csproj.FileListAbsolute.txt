@@ -352,3 +352,4 @@ C:\Users\bk\OneDrive\Desktop\Sofcom Project1\TeamCore\obj\Debug\net10.0\refint\T
 C:\Users\bk\OneDrive\Desktop\Sofcom Project1\TeamCore\obj\Debug\net10.0\TeamCore.pdb
 C:\Users\bk\OneDrive\Desktop\Sofcom Project1\TeamCore\obj\Debug\net10.0\TeamCore.genruntimeconfig.cache
 C:\Users\bk\OneDrive\Desktop\Sofcom Project1\TeamCore\obj\Debug\net10.0\ref\TeamCore.dll
+C:\Users\bk\OneDrive\Desktop\Sofcom Project1\TeamCore\obj\Debug\net10.0\TeamCore.sourcelink.json

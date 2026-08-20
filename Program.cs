@@ -53,6 +53,7 @@ class Program
         }
         Console.WriteLine("Employee added successfully!");
     }
+
     static void ViewEmployees()
     {
         using (SqlConnection conn = new SqlConnection(connectionString))
@@ -74,18 +75,67 @@ class Program
     static void UpdateEmployee()
     {
         Console.Write("Enter Employee Id to update: ");
-        int id = int.Parse(Console.ReadLine());
-        Console.Write("Enter New Salary: ");
-        float salary = float.Parse(Console.ReadLine());
+        if (!int.TryParse(Console.ReadLine(), out int id))
+        {
+            Console.WriteLine("Invalid Id.");
+            return;
+        }
 
         using (SqlConnection conn = new SqlConnection(connectionString))
         {
             conn.Open();
-            string query = "UPDATE Employees SET Salary = @Salary WHERE Id = @Id";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Salary", salary);
-            cmd.Parameters.AddWithValue("@Id", id);
-            int rows = cmd.ExecuteNonQuery();
+
+            // First, fetch the existing record so we know current values
+            string selectQuery = "SELECT Name, Email, Department, Salary FROM Employees WHERE Id = @Id";
+            SqlCommand selectCmd = new SqlCommand(selectQuery, conn);
+            selectCmd.Parameters.AddWithValue("@Id", id);
+
+            string currentName = null, currentEmail = null, currentDept = null;
+            float currentSalary = 0;
+
+            using (SqlDataReader reader = selectCmd.ExecuteReader())
+            {
+                if (!reader.Read())
+                {
+                    Console.WriteLine("Employee not found.");
+                    return;
+                }
+                currentName = reader["Name"].ToString();
+                currentEmail = reader["Email"].ToString();
+                currentDept = reader["Department"].ToString();
+                currentSalary = Convert.ToSingle(reader["Salary"]);
+            }
+
+            // Ask for new values; leave blank to keep the current value
+            Console.WriteLine("Press Enter to keep the current value.");
+
+            Console.Write($"Enter New Name [{currentName}]: ");
+            string nameInput = Console.ReadLine();
+            string newName = string.IsNullOrWhiteSpace(nameInput) ? currentName : nameInput;
+
+            Console.Write($"Enter New Email [{currentEmail}]: ");
+            string emailInput = Console.ReadLine();
+            string newEmail = string.IsNullOrWhiteSpace(emailInput) ? currentEmail : emailInput;
+
+            Console.Write($"Enter New Department [{currentDept}]: ");
+            string deptInput = Console.ReadLine();
+            string newDept = string.IsNullOrWhiteSpace(deptInput) ? currentDept : deptInput;
+
+            Console.Write($"Enter New Salary [{currentSalary}]: ");
+            string salaryInput = Console.ReadLine();
+            float newSalary = string.IsNullOrWhiteSpace(salaryInput) ? currentSalary : float.Parse(salaryInput);
+
+            string updateQuery = @"UPDATE Employees 
+                                    SET Name = @Name, Email = @Email, Department = @Department, Salary = @Salary 
+                                    WHERE Id = @Id";
+            SqlCommand updateCmd = new SqlCommand(updateQuery, conn);
+            updateCmd.Parameters.AddWithValue("@Name", newName);
+            updateCmd.Parameters.AddWithValue("@Email", newEmail);
+            updateCmd.Parameters.AddWithValue("@Department", newDept);
+            updateCmd.Parameters.AddWithValue("@Salary", newSalary);
+            updateCmd.Parameters.AddWithValue("@Id", id);
+
+            int rows = updateCmd.ExecuteNonQuery();
 
             if (rows > 0)
                 Console.WriteLine("Employee updated successfully!");
